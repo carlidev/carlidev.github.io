@@ -1,0 +1,7 @@
+<div #container id='container'>
+    <ng-container *ngFor="let note of notes">
+        <div class='note whitenote' [id]="note.id">
+            <div *ngIf="note.sharp" class='note blacknote' [id]="note.sharp.id"></div>
+        </div>
+    </ng-container>
+</div>

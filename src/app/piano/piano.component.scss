@@ -1,0 +1,27 @@
+#container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    border: 5px solid black;
+    touch-action: none;
+}
+
+.whitenote {
+    background: white;
+    border-right: 1px solid black;
+    flex-grow: 1;
+    position: relative;
+    overflow: visible;
+}
+
+.blacknote {
+    position: absolute;
+    height: 55%;
+    width: 60%;
+    left: 70%;
+    z-index: 1;
+    background: #777;
+}
