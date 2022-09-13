@@ -36,6 +36,11 @@ export class PianoComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (!this.fullscreen) {
+      document.documentElement.requestFullscreen();
+      screen.orientation.lock('landscape');
+      this.fullscreen = true;
+    }
     this.renderer.listen(this.container.nativeElement, 'pointerdown', (event: PointerEvent) => {
       this.pointerDown(event);
     });
@@ -73,11 +78,6 @@ export class PianoComponent implements AfterViewInit {
   }
 
   noteDown(note: Note, event: MouseEvent) {
-    /*if (!this.fullscreen) {
-      document.documentElement.requestFullscreen();
-      screen.orientation.lock('landscape');
-      this.fullscreen = true;
-    }*/
     const elt = document.getElementById(note.id);
     if (elt) {
       elt.style.background = note.isSharp ? 'black' : '#ccc';
