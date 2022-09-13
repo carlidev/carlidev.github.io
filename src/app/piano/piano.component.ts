@@ -10,8 +10,8 @@ export class PianoComponent implements AfterViewInit {
 
   private synth: any;
   notes: Array<Note>;
-  fullscreen = false;
   currentNoteByPointer = new Map<number, string>();
+  pointersByNote = new Map<string, Set<number>>();
 
   @ViewChild('container', { static: true }) protected container!: ElementRef;
 
@@ -33,14 +33,17 @@ export class PianoComponent implements AfterViewInit {
       new Note('A', 5),
       new Note('B', 5)*/
     ];
+    this.notes.forEach(note => {
+      this.pointersByNote.set(note.id, new Set());
+      if (note.sharp) {
+        this.pointersByNote.set(note.sharp.id, new Set());
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    if (!this.fullscreen) {
-      document.documentElement.requestFullscreen();
-      screen.orientation.lock('landscape');
-      this.fullscreen = true;
-    }
+    document.documentElement.requestFullscreen();
+    screen.orientation.lock('landscape').catch(() => { });
     this.renderer.listen(this.container.nativeElement, 'pointerdown', (event: PointerEvent) => {
       this.pointerDown(event);
     });
@@ -56,40 +59,50 @@ export class PianoComponent implements AfterViewInit {
     const under = document.elementFromPoint(event.clientX, event.clientY);
     if (under?.classList.contains('note')) {
       this.currentNoteByPointer.set(event.pointerId, under.id);
-      this.synth.triggerAttackRelease(under.id, "16n");
+      this.playNote(under.id, event.pointerId);
     }
   }
 
   pointerUp(event: PointerEvent) {
+    const noteId = this.currentNoteByPointer.get(event.pointerId);
     this.currentNoteByPointer.delete(event.pointerId);
+    if (noteId) {
+      this.stopNote(noteId, event.pointerId);
+    }
   }
 
   pointerMove(event: PointerEvent) {
-    const prevNote = this.currentNoteByPointer.get(event.pointerId);
-    if (prevNote) {
+    const prevNoteId = this.currentNoteByPointer.get(event.pointerId);
+    if (prevNoteId) {
       const under = document.elementFromPoint(event.clientX, event.clientY);
       if (under?.classList.contains('note')) {
-        if (prevNote !== under.id) {
-          this.synth.triggerAttackRelease(under.id, "16n");
+        if (prevNoteId !== under.id) {
+          this.playNote(under.id, event.pointerId);
           this.currentNoteByPointer.set(event.pointerId, under.id);
+          this.stopNote(prevNoteId, event.pointerId);
         }
       }
     }
   }
 
-  noteDown(note: Note, event: MouseEvent) {
-    const elt = document.getElementById(note.id);
+  playNote(noteId: string, pointerId: number) {
+    this.synth.triggerAttackRelease(noteId, "16n");
+    const pointers = this.pointersByNote.get(noteId)!;
+    pointers.add(pointerId);
+    const elt = document.getElementById(noteId);
     if (elt) {
-      elt.style.background = note.isSharp ? 'black' : '#ccc';
+      elt.style.background = 'black';
     }
-    this.synth.triggerAttackRelease(note.toPlay, "16n");
-    event.stopPropagation();
   }
 
-  noteUp(note: Note) {
-    const elt = document.getElementById(note.id);
-    if (elt) {
-      elt.style.background = note.isSharp ? '#777' : '';
+  stopNote(noteId: string, pointerId: number) {
+    const pointers = this.pointersByNote.get(noteId)!;
+    pointers.delete(pointerId);
+    if (pointers.size <= 0) {
+      const elt = document.getElementById(noteId);
+      if (elt) {
+        elt.style.background = '';
+      }
     }
   }
 
