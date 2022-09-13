@@ -27,18 +27,17 @@ export class AppComponent implements AfterViewInit {
       new Note('G', 4),
       new Note('A', 4),
       new Note('B', 4),
-      new Note('C', 5),
+      /*new Note('C', 5),
       new Note('D', 5),
       new Note('E', 5),
       new Note('F', 5),
       new Note('G', 5),
       new Note('A', 5),
-      new Note('B', 5)
+      new Note('B', 5)*/
     ];
   }
 
   ngAfterViewInit(): void {
-    console.log('this.container', this.container);
     this.renderer.listen(this.container.nativeElement, 'pointerdown', (event: PointerEvent) => {
       this.pointerDown(event);
     });

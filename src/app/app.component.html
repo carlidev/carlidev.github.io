@@ -3,8 +3,5 @@
     <div class='note whitenote' [id]="note.id">
       <div *ngIf="note.sharp" class='note blacknote' [id]="note.sharp.id"></div>
     </div>
-    <!--div class='whitenote' [id]="note.id" (mousedown)="noteDown(note, $event)" (mouseup)="noteUp(note)" (mouseleave)="noteUp(note)">
-      <div *ngIf="note.sharp" class='blacknote' [id]="note.sharp.id" (mousedown)="noteDown(note.sharp!, $event)" (mouseup)="noteUp(note.sharp!)" (mouseleave)="noteUp(note.sharp!)"></div>
-    </div-->
   </ng-container>
 </div>
