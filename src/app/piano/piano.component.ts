@@ -9,6 +9,7 @@ import * as Tone from 'tone';
 export class PianoComponent implements AfterViewInit {
 
   private synth: any;
+  private sampler: Tone.Sampler;
   notes: Array<Note>;
   currentNoteByPointer = new Map<number, string>();
   pointersByNote = new Map<string, Set<number>>();
@@ -17,14 +18,23 @@ export class PianoComponent implements AfterViewInit {
 
   constructor(private renderer: Renderer2) {
     this.synth = new Tone.Synth().toDestination();
+    this.sampler = new Tone.Sampler({
+      urls: {
+        C3: "C3.mp3"
+      },
+      baseUrl: "/assets/piano/",
+      onload: () => {
+
+      }
+    }).toDestination();
     this.notes = [
-      new Note('C', 4),
-      new Note('D', 4),
-      new Note('E', 4),
-      new Note('F', 4),
-      new Note('G', 4),
-      new Note('A', 4),
-      new Note('B', 4),
+      new Note('C', 3), // DO
+      new Note('D', 3), // RE
+      new Note('E', 3), // MI
+      new Note('F', 3), // FA
+      new Note('G', 3), // SOL
+      new Note('A', 3), // LA
+      new Note('B', 3), // SI
       /*new Note('C', 5),
       new Note('D', 5),
       new Note('E', 5),
@@ -86,7 +96,7 @@ export class PianoComponent implements AfterViewInit {
   }
 
   playNote(noteId: string, pointerId: number) {
-    this.synth.triggerAttackRelease(noteId, "16n");
+    this.sampler.triggerAttack(noteId);
     const pointers = this.pointersByNote.get(noteId)!;
     pointers.add(pointerId);
     const elt = document.getElementById(noteId);
@@ -99,6 +109,7 @@ export class PianoComponent implements AfterViewInit {
     const pointers = this.pointersByNote.get(noteId)!;
     pointers.delete(pointerId);
     if (pointers.size <= 0) {
+      this.sampler.triggerRelease(noteId);
       const elt = document.getElementById(noteId);
       if (elt) {
         elt.style.background = '';
