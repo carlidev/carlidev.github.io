@@ -1,0 +1,9 @@
+{
+  "name": "db-modeler",
+  "version": "0.0.6",
+  "description": "Lets Claude Code read and change the model open in DB Modeler, the visual PostgreSQL data modeler running in the browser.",
+  "author": { "name": "Charles BOSQUET" },
+  "homepage": "https://carlidev.github.io/",
+  "repository": "https://github.com/carlidev/db-modeler",
+  "keywords": ["postgresql", "data-modeling", "database", "mcp"]
+}

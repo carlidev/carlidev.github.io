@@ -1,0 +1,12 @@
+{
+  "name": "db-modeler",
+  "description": "Claude Code plugin of DB Modeler, the visual PostgreSQL data modeler.",
+  "owner": { "name": "Charles BOSQUET" },
+  "plugins": [
+    {
+      "name": "db-modeler",
+      "source": "./claude-plugin",
+      "description": "Lets Claude Code read and change the model open in DB Modeler."
+    }
+  ]
+}
