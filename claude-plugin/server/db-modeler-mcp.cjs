@@ -32238,7 +32238,7 @@ var StdioServerTransport = class {
 };
 
 // package.json
-var version2 = "0.0.6";
+var version2 = "0.0.7";
 
 // mcp-server/src/bridge.ts
 var import_node_crypto = require("node:crypto");

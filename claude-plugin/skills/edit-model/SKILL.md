@@ -35,7 +35,7 @@ JSON, two-space indent, a fixed key order. Minimal example:
 ```json
 {
   "format": "db-modeler",
-  "version": 1,
+  "version": 2,
   "model": {
     "info": { "name": "Shop", "version": "1.0", "description": "Sales" },
     "typeCatalog": ["uuid", "varchar(255)"],
@@ -158,6 +158,14 @@ index: the normalization puts them back and tells you it did. Its name is yours 
 A `reference` **without** `relation` is a plain foreign key: you write its `columns` pairs yourself and
 nothing is generated.
 
+### Referential actions
+
+Any `reference`, with or without `relation`, may carry `onDelete` and `onUpdate`: `"restrict"`, `"cascade"`,
+`"set null"` or `"set default"`, written after `columns` — `"onDelete": "cascade"` gives
+`ON DELETE CASCADE`. **Omit them for NO ACTION**, the default of PostgreSQL: `"no action"` is refused. A
+relation never sets them, not even an identifying one: choose them only when the user asks. They survive any
+change of the relation.
+
 ### `diagram`
 
 A table exists in the dictionary even without a symbol, but **the user only sees what the diagram draws**:
@@ -189,7 +197,9 @@ its tables.
 
 **Only warned**, in the answer of `apply_document` and in `get_sql`: duplicate names where the uniqueness
 rules forbid them, an index or constraint with an empty or broken definition, a foreign key without column, a
-table without column, a reserved word used unquoted. The model accepts them; PostgreSQL refuses the script.
+table without column, a reserved word used unquoted, a referential action PostgreSQL cannot run (`set null` on
+a NOT NULL column, `set default` on a column without default value). The model accepts them; PostgreSQL
+refuses the script or, for a referential action, the delete or update that runs it.
 
 Names are written to SQL **exactly as typed**: double quotes come from the user. `"Order"` is a quoted
 identifier, `order` is a reserved word that will be reported.
